@@ -1,0 +1,291 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>centos系列一键更换yum源脚本 | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    centos系列一键更换yum源脚本
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-15 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/aJq71syRW/" class="post-tags">
+                            # linux
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id="前言">前言</h2>
+<p>脚本由本人所写,实际就是把命令整合了而已！</p>
+<p><sub>仅适用于centos7.x系统</sub><br>
+现已有1.1版本支持centos5-8</p>
+<p>由于本人是是新手，脚本不太完善有能力的自行修改！<br>
+<strong>注意事项</strong></p>
+<p>此脚本请使用root用户执行</p>
+<p>脚本执行后会在etc下面创建一个备份原数据的文件夹<strong>为避免原数据丢失请不要删除此文件夹</strong></p>
+<p>有部分源是替换原文件内容实现更换yum源的,如果备份前自己就更换过源就会造成更换失败,所以不得已对此类源选择了从网上下载已经修改过的配置文件，这个好处就是避免了以上问题发生，坏处就是网络文件如果失效此类源去下载配置文件的时候会直接下载失败</p>
+<p>如遇到下载失败报错的可以再次执行此脚本即可，注意首次执行此脚本会进行备份，第二次执行此脚本会报错备份失败，直接忽略即可!</p>
+<h2 id="演示">演示</h2>
+<p>点我预览1.0版本<br>
+点我预览1.1版本<br>
+演示图：<img src="https://gsbok.cn/usr/uploads/2022/05/2354067481.png" alt="img1.0.png" title="img1.0.png" loading="lazy"></p>
+<h2 id="使用教程">使用教程</h2>
+<p>1.0版本-仅支持centos7.x</p>
+<p>首先从网络上下载此脚本</p>
+<pre><code class="language-shell">wget https://disk.gsbok.cn/Shell/yum.sh
+
+</code></pre>
+<p>如果出现找不到wget命令可以用下面命令</p>
+<pre><code class="language-shell">curl -o yum.sh https://disk.gsbok.cn/Shell/yum.sh
+
+</code></pre>
+<p>下载完成后在终端窗口执行</p>
+<pre><code class="language-shell">chmod u+x yum.sh
+
+</code></pre>
+<p>然后执行</p>
+<pre><code class="language-shell">./yum.sh
+
+</code></pre>
+<p>然后输入你需要更换yum源的编号回车即可。</p>
+<p>1.1版本支持centos5-8一键修改yum源</p>
+<p>先从网络上下载此脚本</p>
+<pre><code>wget https://disk.gsbok.cn/Shell/yum1.1.sh
+
+</code></pre>
+<p>如果出现找不到wget命令可以用下面命令</p>
+<pre><code>curl -o yum.sh https://disk.gsbok.cn/Shell/yum1.1.sh
+
+</code></pre>
+<p>下载完成后在终端窗口执行</p>
+<pre><code>chmod u+x yum1.1.sh
+
+</code></pre>
+<p>然后执行</p>
+<pre><code>./yum1.1.sh
+
+</code></pre>
+<p><strong>之后就是输入自己需要更换的源对应的编号</strong></p>
+<p>然后就是此脚本是没有经过太多的测试，如遇到bug可以联系QQ:2913319095<br>
+进行解决。</p>
+<p>最后修改：2022 年 05 月 12 日</p>
+<p>© 允许规范转载</p>
+<p>打赏</p>
+<h4 id="赞赏作者">赞赏作者</h4>
+<ul>
+<li><a href="https://gsbok.cn/66.html">支付宝</a></li>
+<li><a href="https://gsbok.cn/66.html">微信</a></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://gsbok.cn/usr/uploads/2022/03/295928993.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://gsbok.cn/usr/uploads/2022/03/181551785.jpg" alt="" loading="lazy"></figure>
+<p>如果觉得我的文章对你有用，请随意赞赏</p>
+<p>本文转自 <a href="https://gsbok.cn/66.html">https://gsbok.cn/66.html</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/k8s-HostAliases/" class="post-title gt-a-link">
+                    Kubernetes HostAliases添加其他主机别名到Pod
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/yum-script/" class="leancloud_visitors" data-flag-title="centos系列一键更换yum源脚本">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

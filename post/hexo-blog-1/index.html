@@ -1,0 +1,263 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Hexo + GitHub 搭建个人博客(一) Hexo的搭建 | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Hexo + GitHub 搭建个人博客(一) Hexo的搭建
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-09 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/wzMUO9rFo_/" class="post-tags">
+                            # hexo+github搭建博客
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id=""><a href="about:blank#hexo-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2" title="hexo 搭建个人博客"></a>hexo 搭建个人博客</h2>
+<p>现在的网上的可以发表文章网站有很多地方 (CSDN, 掘金, 简书 ) 等等</p>
+<p>相比于 别人的 哪有自己的香</p>
+<p>有很多人新手童鞋想要建立自己的博客 博客开源框架 又有很多 不知如何选择</p>
+<p>这里推荐就给大家推荐一个 hexo</p>
+<p>Hexo 是基于 node.js 快速、简洁且高效的博客框架</p>
+<h2 id="-2"><a href="about:blank#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA" title="环境搭建"></a>环境搭建</h2>
+<h3 id="-3"><a href="about:blank#node-js" title="node.js"></a>node.js</h3>
+<p>Node.js® 是一个基于 Chrome V8 引擎 的 <code>JavaScript</code> 运行时环境。</p>
+<p>中文官网： <a href="https://nodejs.org/zh-cn">https://nodejs.org/zh-cn</a> 下载长期支持版</p>
+<p>安装好了之后，打开 cmd 输入 <code>node -v</code> ，如果显示的是下载的版本号那就是安装成功了。</p>
+<figure data-type="image" tabindex="1"><img src="https://lyboy6.github.io/blog/2022/09/09/hexo-init/node.png" alt="" loading="lazy"></figure>
+<h3 id="-4"><a href="about:blank#Git" title="Git"></a>Git</h3>
+<p>Git（读音为/gɪt/）是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。 也是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件</p>
+<p>Git 官网： <a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></p>
+<p>安装好了之后，打开 cmd 输入 <code>git --version</code> ，如果显示的 Git 的版本号那就是安装成功了。</p>
+<figure data-type="image" tabindex="2"><img src="https://lyboy6.github.io/blog/2022/09/09/hexo-init/git.png" alt="" loading="lazy"></figure>
+<h3 id="-5"><a href="about:blank#%E6%B3%A8%E5%86%8CGitHub%E8%B4%A6%E5%8F%B7" title="注册GitHub账号"></a>注册GitHub账号</h3>
+<p>因为我们需要把 Hexo 站点托管到 GitHub 上，所以我们需要一个 GitHub 账号。</p>
+<p>打开 GitHub 官网，点击 Sigh up，然后输入邮箱、密码、用户名，最后一个按自己需求来写，通过人机验证后，点击 Create account 创建账号就ok了。</p>
+<p>现在我们的准备工作 就完成了 接下来 我们就要安装 Hexo</p>
+<h2 id="-6"><a href="about:blank#%E5%AE%89%E8%A3%85Hexo" title="安装Hexo"></a>安装Hexo</h2>
+<p>hexo中文官网： <a href="https://hexo.io/zh-cn/">https://hexo.io/zh-cn/</a></p>
+<p>打开我们 cmd 黑窗口 输入命令</p>
+<pre><code>npm install hexo-cli -g
+
+</code></pre>
+<p>安装好后 输入 <code>hexo -v</code> 输入版本号 代表安装成功了</p>
+<p>接下来 就是 在你任意文件中 创建 blog 文件夹</p>
+<p>然后输入 <code>hexo init blog</code> 初始化文件夹，接着输入 <code>cd blog</code> 将目录切换到 blog 文件夹里,然后输入 <code>npm install</code> 就会在文件夹里生成一些需要的文件。</p>
+<p>输入 <code>hexo -h</code> 查看帮助</p>
+<p>这样就配置好了，可以输 <code>hexo g</code> 生成静态网页，然后输入 <code>hexo s</code> 打开本地服务器来查看网页</p>
+<figure data-type="image" tabindex="3"><img src="https://lyboy6.github.io/blog/2022/09/09/hexo-init/hexo.png" alt="" loading="lazy"></figure>
+<p>好了 现在的我们的 Hexo 博客已经搭建完毕了</p>
+<p>下一节 我们讲 博客的主题配置</p>
+<p>标签: <a href="https://lyboy6.github.io/blog/tags/hexo/">hexo</a><a href="https://lyboy6.github.io/blog/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">个人博客</a></p>
+<p>本文转自 <a href="https://lyboy6.github.io/blog/2022/09/09/hexo-init.html">https://lyboy6.github.io/blog/2022/09/09/hexo-init.html</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/hexo-blog-3/" class="post-title gt-a-link">
+                    Hexo + GitHub 搭建个人博客(三) Hexo配置
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/hexo-blog-1/" class="leancloud_visitors" data-flag-title="Hexo + GitHub 搭建个人博客(一) Hexo的搭建">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

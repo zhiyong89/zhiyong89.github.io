@@ -1,0 +1,441 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>K8s 部署 Gitlab CI Runner | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    K8s 部署 Gitlab CI Runner
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-09 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/kIeZwp5qj/" class="post-tags">
+                            # Kubernetes
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <ul>
+<li>K8s 版本：<code>1.20.6</code></li>
+<li>GitLab CI 最大的作用是管理各个项目的构建状态。因此，运行构建任务这种浪费资源的事情交给一个独立的 Gitlab Runner 来做就会好很多，而且 Gitlab Runner 可以安装到不同的机器上</li>
+<li>只要在项目中添加一个<code>.gitlab-ci.yml</code>文件，然后添加一个 Runner ，即可进行持续集成</li>
+<li>官方文档：<a href="https://docs.gitlab.com/runner/install/">Install GitLab Runner | GitLab</a></li>
+</ul>
+<h2 id="1-介绍">1. 介绍</h2>
+<ul>
+<li><strong>Pipeline</strong>：相当于一次构建任务，里面可以包含多个流程，如安装依赖、运行测试、编译、部署测试服务器、部署生产服务器等。任何提交或者 Merge Request 的合并都可以触发 Pipeline 构建</li>
+<li><strong>Stages</strong>：表示一个构建阶段。一次 Pipeline 中可定义多个 Stages
+<ul>
+<li>所有 Stages 会顺序运行，即当一个 Stage 完成后，下一个 Stage 才会开始</li>
+<li>只有当所有 Stages 完成后，该构建任务才会成功</li>
+<li>如果任何一个 Stage 失败，那么后面的 Stages 不会执行，该构建任务失败</li>
+</ul>
+</li>
+<li><strong>Jobs</strong>：表示构建工作，即某个 Stage 里面执行的工作。一个 Stage 中可定义多个 Jobs
+<ul>
+<li>相同 Stage 中的 Jobs 会并行执行</li>
+<li>相同 Stage 中的 Jobs 都执行成功时，该 Stage 才会成功</li>
+<li>如果任何一个 Job 失败，那么该 Stage 失败，即该构建任务失败</li>
+</ul>
+</li>
+<li><strong>Runner</strong>：执行 Gitlab CI 构建任务</li>
+</ul>
+<h2 id="2-gitlab-runner">2. Gitlab Runner</h2>
+<ul>
+<li><strong>gitlab-ci-runner-cm</strong>：Runner 镜像所需环境变量
+<ul>
+<li>其他选项可在 Pod 中运行<code>gitlab-ci-multi-runner register --help</code>查看</li>
+</ul>
+</li>
+<li><strong>gitlab-ci-token</strong>：存放加密的 Gitlab CI runner token
+<ul>
+<li><a href="http://gitlab.south.com/admin/runners">http://gitlab.south.com/admin/runners</a> -&gt; <code>K9Qhf4Sh1T7fqxHSWS5s</code></li>
+</ul>
+</li>
+<li><strong>gitlab-ci-runner-scripts</strong>：一个用于注册、运行和取消注册 Gitlab CI Runner 的脚本
+<ul>
+<li>只有当 Pod 正常通过 Kubernetes（TERM 信号）终止时，才会触发取消注册。如果强制终止 Pod（SIGKILL 信号），Runner 将不会注销自身，必须手动完成对这种被杀死的 Runner 的清理</li>
+</ul>
+</li>
+<li><strong>gitlab-ci-runner</strong>：Runner 的 StatefulSet 控制器
+<ul>
+<li>通过 K8s 生命周期钩子：开始运行时取消注册所有的同名 Runner；节点丢失时（即 NodeLost 事件）重新注册自己并开始运行；正常停止 Pod 时运行 unregister 命令来取消自己</li>
+</ul>
+</li>
+</ul>
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-ci
+  namespace: gitlab
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gitlab-ci
+  namespace: gitlab
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;*&quot;]
+    verbs: [&quot;*&quot;]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gitlab-ci
+  namespace: gitlab
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-ci
+    namespace: gitlab
+roleRef:
+  kind: Role
+  name: gitlab-ci
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: gitlab-ci-runner
+  name: gitlab-ci-runner-cm
+  namespace: gitlab
+data:
+  REGISTER_NON_INTERACTIVE: &quot;true&quot;
+  REGISTER_LOCKED: &quot;false&quot;
+  METRICS_SERVER: &quot;0.0.0.0:9100&quot;
+  CI_SERVER_URL: &quot;http://gitlab.gitlab.svc.cluster.local/ci&quot;  # *
+  RUNNER_REQUEST_CONCURRENCY: &quot;4&quot;
+  RUNNER_EXECUTOR: &quot;kubernetes&quot;
+  KUBERNETES_NAMESPACE: &quot;gitlab&quot;  # *
+  KUBERNETES_PRIVILEGED: &quot;true&quot;
+  KUBERNETES_CPU_LIMIT: &quot;1&quot;
+  KUBERNETES_MEMORY_LIMIT: &quot;1Gi&quot;
+  KUBERNETES_SERVICE_CPU_LIMIT: &quot;1&quot;
+  KUBERNETES_SERVICE_MEMORY_LIMIT: &quot;1Gi&quot;
+  KUBERNETES_HELPER_CPU_LIMIT: &quot;500m&quot;
+  KUBERNETES_HELPER_MEMORY_LIMIT: &quot;100Mi&quot;
+  KUBERNETES_PULL_POLICY: &quot;if-not-present&quot;
+  KUBERNETES_TERMINATIONGRACEPERIODSECONDS: &quot;10&quot;
+  KUBERNETES_POLL_INTERVAL: &quot;5&quot;
+  KUBERNETES_POLL_TIMEOUT: &quot;360&quot;
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-ci-token
+  namespace: gitlab
+  labels:
+    app: gitlab-ci-runner
+data:
+  GITLAB_CI_TOKEN: SzlRaGY0U2gxVDdmcXhIU1dTNXMK  # echo K9Qhf4Sh1T7fqxHSWS5s | base64 -w0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: gitlab-ci-runner
+  name: gitlab-ci-runner-scripts
+  namespace: gitlab
+data:
+  run.sh: |
+    #!/bin/bash
+    unregister() {
+        kill %1
+        echo &quot;Unregistering runner ${RUNNER_NAME} ...&quot;
+        /usr/bin/gitlab-ci-multi-runner unregister -t &quot;$(/usr/bin/gitlab-ci-multi-runner list 2&gt;&amp;1 | tail -n1 | awk '{print $4}' | cut -d'=' -f2)&quot; -n ${RUNNER_NAME}
+        exit $?
+    }
+    trap 'unregister' EXIT HUP INT QUIT PIPE TERM
+    echo &quot;Registering runner ${RUNNER_NAME} ...&quot;
+    /usr/bin/gitlab-ci-multi-runner register -r ${GITLAB_CI_TOKEN}
+    sed -i 's/^concurrent.*/concurrent = '&quot;${RUNNER_REQUEST_CONCURRENCY}&quot;'/' /home/gitlab-runner/.gitlab-runner/config.toml
+    echo &quot;Starting runner ${RUNNER_NAME} ...&quot;
+    /usr/bin/gitlab-ci-multi-runner run -n ${RUNNER_NAME} &amp;
+    wait
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitlab-ci-runner
+  namespace: gitlab
+  labels:
+    app: gitlab-ci-runner
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  replicas: 2
+  serviceName: gitlab-ci-runner
+  template:
+    metadata:
+      labels:
+        app: gitlab-ci-runner
+    spec:
+      volumes:
+      - name: gitlab-ci-runner-scripts
+        projected:
+          sources:
+          - configMap:
+              name: gitlab-ci-runner-scripts
+              items:
+              - key: run.sh
+                path: run.sh
+                mode: 0755
+      serviceAccountName: gitlab-ci
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        supplementalGroups: [999]
+      containers:
+      - image: gitlab/gitlab-runner:latest
+        name: gitlab-ci-runner
+        command:
+        - /scripts/run.sh
+        envFrom:
+        - configMapRef:
+            name: gitlab-ci-runner-cm
+        - secretRef:
+            name: gitlab-ci-token
+        env:
+        - name: RUNNER_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - containerPort: 9100
+          name: http-metrics
+          protocol: TCP
+        volumeMounts:
+        - name: gitlab-ci-runner-scripts
+          mountPath: &quot;/scripts&quot;
+          readOnly: true
+      restartPolicy: Always
+
+</code></pre>
+<p>创建：</p>
+<pre><code>$ kubectl create -f gitlab-runner.yaml
+$ kubectl -n gitlab get pod
+NAME                        READY   STATUS    RESTARTS   AGE
+gitlab-7b894fcff-mnkb4      1/1     Running   0          69m
+gitlab-ci-runner-0          1/1     Running   0          2m
+gitlab-ci-runner-1          1/1     Running   0          2m
+postgresql-6b6b478f-s6nj7   1/1     Running   0          69m
+redis-7db89c7d46-fqdr5      1/1     Running   0          69m
+
+</code></pre>
+<p>结果：</p>
+<p>在 <a href="http://gitlab.south.com/admin/runners">http://gitlab.south.com/admin/runners</a> 即可看到两个 Runner 实例</p>
+<hr>
+<p>参考：<a href="https://www.qikqiak.com/post/gitlab-runner-install-on-k8s/">在 Kubernetes 上安装 Gitlab CI Runner-阳明的博客</a></p>
+<p>本文转自 <a href="https://www.cnblogs.com/lb477/p/15173133.html">https://www.cnblogs.com/lb477/p/15173133.html</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/hexo-blog-4/" class="post-title gt-a-link">
+                    Hexo + GitHub 搭建个人博客(四) Hexo部署
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/k8s-gitlab-runner/" class="leancloud_visitors" data-flag-title="K8s 部署 Gitlab CI Runner">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

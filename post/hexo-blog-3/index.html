@@ -1,0 +1,316 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Hexo + GitHub 搭建个人博客(三) Hexo配置 | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Hexo + GitHub 搭建个人博客(三) Hexo配置
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-09 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/wzMUO9rFo_/" class="post-tags">
+                            # hexo+github搭建博客
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id=""><a href="about:blank#Hexo-%E5%8D%9A%E5%AE%A2%E9%85%8D%E7%BD%AE" title="Hexo 博客配置"></a>Hexo 博客配置</h2>
+<p>你可以 在根目录下 <code>_config_yml</code> 中 修改大部分的配置</p>
+<h3 id="-2"><a href="about:blank#%E7%BD%91%E7%AB%99" title="网站"></a>网站</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>title</code></td>
+<td style="text-align:center">网站标题</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>subtitle</code></td>
+<td style="text-align:center">网站副标题</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>description</code></td>
+<td style="text-align:center">网站描述</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>keywords</code></td>
+<td style="text-align:center">网站的关键词。支持多个关键词。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>author</code></td>
+<td style="text-align:center">您的名字</td>
+</tr>
+</tbody>
+</table>
+<p>您可以 去 Hexo 的 官方网站 查看更多的配置选项 <a href="https://hexo.io/zh-cn/docs/configuration">https://hexo.io/zh-cn/docs/configuration</a></p>
+<h2 id="-3"><a href="about:blank#%E5%86%99%E4%BD%9C" title="写作"></a>写作</h2>
+<p>你可以执行下列命令来创建一篇新文章或者新的页面。</p>
+<pre><code>hexo new [layout] &lt;title&gt;
+
+</code></pre>
+<p>您可以在命令中指定文章的布局（<code>layout</code>），默认为 <code>post</code> ，可以通过修改 <code>_config.yml</code> 中的 <code>default_layout</code> 参数来指定默认布局</p>
+<h3 id="-4"><a href="about:blank#%E5%B8%83%E5%B1%80%EF%BC%88layout%EF%BC%89" title="布局（layout）"></a>布局（layout）</h3>
+<p>Hexo 有三种默认布局：<code>post</code> 、<code>page</code> 和 <code>draft</code>。在创建这三种不同类型的文件时，它们将会被保存到不同的路径；而您自定义的其他布局和 <code>post</code> 相同，都将储存到 <code>source/_posts</code> 文件夹。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">布局</th>
+<th style="text-align:center">路径</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>post</code></td>
+<td style="text-align:center"><code>source/_posts</code></td>
+<td style="text-align:center">文章</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>page</code></td>
+<td style="text-align:center"><code>source</code></td>
+<td style="text-align:center">新页面</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>draft</code></td>
+<td style="text-align:center"><code>source/_draft</code></td>
+<td style="text-align:center">草稿</td>
+</tr>
+</tbody>
+</table>
+<p>您可以去 Hexo 的 官网网站 查看更多的配置选项 <a href="https://hexo.io/zh-cn/docs/writing">https://hexo.io/zh-cn/docs/writing</a></p>
+<h2 id="-5"><a href="about:blank#%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E6%8F%92%E4%BB%B6" title="图片资源插件"></a>图片资源插件</h2>
+<p>源（Asset）代表 <code>source</code> 文件夹中除了文章以外的所有文件，例如图片、<code>CSS</code>、<code>JS</code> 文件等。比方说，如果你的 <code>Hexo</code> 项目中只有少量图片，那最简单的方法就是将它们放在 <code>source/</code> 文件夹中。然后通过类似于 <code>![](image.jpg)</code> 的方法访问它们。</p>
+<p>hexo 的图片 您可以放在图床 服务器 oss 等地方</p>
+<p>如果是本地图片 需要怎么引入呢 这里推荐一个 插件</p>
+<p>在根目录下执行</p>
+<pre><code>npm install hexo-asset-image
+
+</code></pre>
+<p>新建文章</p>
+<pre><code>hexo new post test
+
+</code></pre>
+<p>这时会在 <code>source</code> 文件创建 <code>test.md</code> 和 <code>test</code> 文件夹</p>
+<p>你只需要把图片放在 <code>test</code> 文件夹中</p>
+<p>在 <code>test.md</code> 使用</p>
+<pre><code>![](test.png)
+
+</code></pre>
+<p>完美 这时候图片就可以在本地引入了</p>
+<p>标签: <a href="https://lyboy6.github.io/blog/tags/hexo/">hexo</a><a href="https://lyboy6.github.io/blog/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">个人博客</a></p>
+<p>本文转自 <a href="https://lyboy6.github.io/blog/2022/09/11/hexo-config.html">https://lyboy6.github.io/blog/2022/09/11/hexo-config.html</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/BRICS/" class="post-title gt-a-link">
+                    BRICS-FS-11云计算赛项样题难点解析（私有云部分）
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/hexo-blog-3/" class="leancloud_visitors" data-flag-title="Hexo + GitHub 搭建个人博客(三) Hexo配置">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

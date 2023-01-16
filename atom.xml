@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://zhiyong89.github.io/</id>
+    <title>智勇</title>
+    <updated>2023-01-16T12:58:12.108Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://zhiyong89.github.io/"/>
+    <link rel="self" href="https://zhiyong89.github.io/atom.xml"/>
+    <subtitle>记录学习生活</subtitle>
+    <logo>https://zhiyong89.github.io/images/avatar.png</logo>
+    <icon>https://zhiyong89.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, 智勇</rights>
+    <entry>
+        <title type="html"><![CDATA[国内开源镜像站点分享]]></title>
+        <id>https://zhiyong89.github.io/post/mirrors-china/</id>
+        <link href="https://zhiyong89.github.io/post/mirrors-china/">
+        </link>
+        <updated>2023-01-15T13:52:21.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[centos系列一键更换yum源脚本]]></title>
+        <id>https://zhiyong89.github.io/post/yum-script/</id>
+        <link href="https://zhiyong89.github.io/post/yum-script/">
+        </link>
+        <updated>2023-01-15T13:49:28.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Kubernetes HostAliases添加其他主机别名到Pod]]></title>
+        <id>https://zhiyong89.github.io/post/k8s-HostAliases/</id>
+        <link href="https://zhiyong89.github.io/post/k8s-HostAliases/">
+        </link>
+        <updated>2023-01-15T12:59:28.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Kubernetes Pod 的服务质量（QoS）]]></title>
+        <id>https://zhiyong89.github.io/post/k8s-QoS/</id>
+        <link href="https://zhiyong89.github.io/post/k8s-QoS/">
+        </link>
+        <updated>2023-01-15T12:49:28.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello World]]></title>
+        <id>https://zhiyong89.github.io/post/hello-world/</id>
+        <link href="https://zhiyong89.github.io/post/hello-world/">
+        </link>
+        <updated>2023-01-13T11:56:59.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[本地搭建的GitLab中开启Pages功能]]></title>
+        <id>https://zhiyong89.github.io/post/gitlab-pages/</id>
+        <link href="https://zhiyong89.github.io/post/gitlab-pages/">
+        </link>
+        <updated>2023-01-12T05:42:08.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[K8s 部署 Gitlab CI Runner]]></title>
+        <id>https://zhiyong89.github.io/post/k8s-gitlab-runner/</id>
+        <link href="https://zhiyong89.github.io/post/k8s-gitlab-runner/">
+        </link>
+        <updated>2023-01-09T02:45:09.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hexo + GitHub 搭建个人博客(四) Hexo部署]]></title>
+        <id>https://zhiyong89.github.io/post/hexo-blog-4/</id>
+        <link href="https://zhiyong89.github.io/post/hexo-blog-4/">
+        </link>
+        <updated>2023-01-09T02:36:29.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hexo + GitHub 搭建个人博客(二) Hexo主题]]></title>
+        <id>https://zhiyong89.github.io/post/hexo-blog-2/</id>
+        <link href="https://zhiyong89.github.io/post/hexo-blog-2/">
+        </link>
+        <updated>2023-01-09T02:36:23.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hexo + GitHub 搭建个人博客(一) Hexo的搭建]]></title>
+        <id>https://zhiyong89.github.io/post/hexo-blog-1/</id>
+        <link href="https://zhiyong89.github.io/post/hexo-blog-1/">
+        </link>
+        <updated>2023-01-09T02:36:09.000Z</updated>
+    </entry>
+</feed>

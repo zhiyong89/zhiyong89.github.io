@@ -1,0 +1,415 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Kubernetes Pod 的服务质量（QoS） | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Kubernetes Pod 的服务质量（QoS）
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-15 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/kIeZwp5qj/" class="post-tags">
+                            # Kubernetes
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20210413195035367.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0NTU2NDE0,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></figure>
+<h2 id="1-前言">1. 前言</h2>
+<hr>
+<p>本页介绍怎样配置 Pod 让其获得特定的服务质量（QoS）类。Kubernetes 使用 QoS 类来决定 Pod 的调度和驱逐策略。</p>
+<h2 id="2-qos-类">2. QoS 类</h2>
+<hr>
+<p>Kubernetes 创建 Pod 时就给它指定了下列一种 QoS 类：</p>
+<ul>
+<li>Guaranteed</li>
+<li>Burstable</li>
+<li>BestEffort</li>
+</ul>
+<p>创建命名空间</p>
+<pre><code>kubectl create namespace qos-example
+</code></pre>
+<h2 id="3-创建一个-qos-类为-guaranteed-的-pod">3. 创建一个 QoS 类为 Guaranteed 的 Pod</h2>
+<hr>
+<p>对于 QoS 类为 Guaranteed 的 Pod：</p>
+<ul>
+<li><strong>Pod 中的每个容器，包含初始化容器，必须指定内存请求和内存限制，并且两者要相等。</strong></li>
+<li><strong>Pod 中的每个容器，包含初始化容器，必须指定 CPU 请求和 CPU 限制，并且两者要相等。</strong></li>
+</ul>
+<p>下面是包含一个容器的 Pod 配置文件。 容器设置了内存请求和内存限制，值都是 200 MiB。 容器设置了 CPU 请求和 CPU 限制，值都是 700 milliCPU：</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-demo
+  namespace: qos-example
+spec:
+  containers:
+  - name: qos-demo-ctr
+    image: nginx
+    resources:
+      limits:
+        memory: &quot;200Mi&quot;
+        cpu: &quot;700m&quot;
+      requests:
+        memory: &quot;200Mi&quot;
+        cpu: &quot;700m&quot;
+
+</code></pre>
+<pre><code>kubectl create -f https://k8s.io/examples/pods/qos/qos-pod.yaml --namespace=qos-example
+
+</code></pre>
+<p>查看 Pod 详情：</p>
+<pre><code>kubectl get pod qos-demo --namespace=qos-example --output=yaml
+
+</code></pre>
+<p>结果表明 Kubernetes 为 Pod 配置的 QoS 类为 Guaranteed。 结果也确认了 Pod 容器设置了与内存限制匹配的内存请求，设置了与 CPU 限制匹配的 CPU 请求。</p>
+<pre><code>spec:
+  containers:
+    ...
+    resources:
+      limits:
+        cpu: 700m
+        memory: 200Mi
+      requests:
+        cpu: 700m
+        memory: 200Mi
+  ...
+status:
+  qosClass: Guaranteed
+
+</code></pre>
+<blockquote>
+<p>说明： 如果容器指定了自己的内存限制，但没有指定内存请求，Kubernetes 会自动为它指定与内存限制匹配的内存请求。同样，如果容器指定了自己的 CPU 限制，但没有指定 CPU 请求，Kubernetes 会自动为它指定与 CPU 限制匹配的 CPU请求。</p>
+</blockquote>
+<h2 id="4-创建一个-qos-类为-burstable-的-pod">4. 创建一个 QoS 类为 Burstable 的 Pod</h2>
+<hr>
+<p>如果满足下面条件，将会指定 Pod 的 QoS 类为 Burstable：</p>
+<ul>
+<li><strong>Pod 不符合 Guaranteed QoS 类的标准。</strong></li>
+<li><strong>Pod 中至少一个容器具有内存或 CPU 请求。</strong></li>
+</ul>
+<p>下面是包含一个容器的 Pod 配置文件。 容器设置了内存限制 200 MiB 和内存请求 100 MiB。</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-demo-2
+  namespace: qos-example
+spec:
+  containers:
+  - name: qos-demo-2-ctr
+    image: nginx
+    resources:
+      limits:
+        memory: &quot;200Mi&quot;
+      requests:
+        memory: &quot;100Mi&quot;
+
+</code></pre>
+<pre><code>kubectl create -f https://k8s.io/examples/pods/qos/qos-pod-2.yaml --namespace=qos-example
+
+</code></pre>
+<p>查看 Pod 详情：</p>
+<pre><code>kubectl get pod qos-demo-2 --namespace=qos-example --output=yaml
+
+</code></pre>
+<p>结果表明 Kubernetes 为 Pod 配置的 QoS 类为 Burstable。</p>
+<pre><code>spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: qos-demo-2-ctr
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        memory: 100Mi
+  ...
+status:
+  qosClass: Burstable
+
+</code></pre>
+<h2 id="5-创建一个-qos-类为-besteffort-的-pod">5. 创建一个 QoS 类为 BestEffort 的 Pod</h2>
+<hr>
+<p><strong>对于 QoS 类为 BestEffort 的 Pod，Pod 中的容器必须没有设置内存和 CPU 限制或请求。</strong></p>
+<p>下面是包含一个容器的 Pod 配置文件。 容器没有设置内存和 CPU 限制或请求。</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-demo-3
+  namespace: qos-example
+spec:
+  containers:
+  - name: qos-demo-3-ctr
+    image: nginx
+
+</code></pre>
+<pre><code>kubectl create -f https://k8s.io/examples/pods/qos/qos-pod-3.yaml --namespace=qos-example
+</code></pre>
+<p>查看 Pod 详情：</p>
+<pre><code>kubectl get pod qos-demo-3 --namespace=qos-example --output=yaml
+</code></pre>
+<p>结果表明 Kubernetes 为 Pod 配置的 QoS 类为 BestEffort。</p>
+<pre><code>spec:
+  containers:
+    ...
+    resources: {}
+  ...
+status:
+  qosClass: BestEffort
+
+</code></pre>
+<h2 id="6-创建包含两个容器的-pod">6. 创建包含两个容器的 Pod</h2>
+<hr>
+<p>下面是包含两个容器的 Pod 配置文件。 一个容器指定了内存请求 200 MiB。 另外一个容器没有指定任何请求和限制。</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-demo-4
+  namespace: qos-example
+spec:
+  containers:
+
+  - name: qos-demo-4-ctr-1
+    image: nginx
+    resources:
+      requests:
+        memory: &quot;200Mi&quot;
+
+  - name: qos-demo-4-ctr-2
+    image: redis
+
+</code></pre>
+<pre><code>kubectl create -f https://k8s.io/examples/pods/qos/qos-pod-4.yaml --namespace=qos-example
+
+</code></pre>
+<p>查看 Pod 详情：</p>
+<pre><code>kubectl get pod qos-demo-4 --namespace=qos-example --output=yaml
+
+</code></pre>
+<p>结果表明 Kubernetes 为 Pod 配置的 QoS 类为 Burstable：</p>
+<pre><code>spec:
+  containers:
+    ...
+    name: qos-demo-4-ctr-1
+    resources:
+      requests:
+        memory: 200Mi
+    ...
+    name: qos-demo-4-ctr-2
+    resources: {}
+    ...
+status:
+  qosClass: Burstable
+
+</code></pre>
+<p>本文转自 <a href="https://blog.csdn.net/qq_34556414/article/details/115675498">https://blog.csdn.net/qq_34556414/article/details/115675498</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/hello-world/" class="post-title gt-a-link">
+                    Hello World
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/k8s-QoS/" class="leancloud_visitors" data-flag-title="Kubernetes Pod 的服务质量（QoS）">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

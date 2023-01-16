@@ -1,0 +1,498 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>BRICS-FS-11云计算赛项样题难点解析（私有云部分） | 智勇</title>
+
+<link rel="shortcut icon" href="https://zhiyong89.github.io//favicon.ico?v=1673873817407">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhiyong89.github.io//styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/languages//dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script> 
+    
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="/">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            智勇
+        </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="changeNavbar">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/friends" class="menu gt-a-link">
+                    友链
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1673873817407"
+                action="/search/">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = () => {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    BRICS-FS-11云计算赛项样题难点解析（私有云部分）
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-01-04 ·
+                    </time>
+                    
+                        <a href="https://zhiyong89.github.io/tag/aoLHuORR-6/" class="post-tags">
+                            # openstack
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <p><strong>一、配置时间同步服务器chrony</strong></p>
+<p>安装chrony服务（默认安装）</p>
+<blockquote>
+<p>yum install -y chrony</p>
+</blockquote>
+<p>修改/etc/chrony.conf文件</p>
+<blockquote>
+<p>vim /etc/chrony.conf</p>
+</blockquote>
+<p>服务端（controller）修改以下三行内容</p>
+<pre><code>server 192.168.1.21 iburst``allow 192.168.1.0/24``local stratum 10
+</code></pre>
+<p>客户端（compute）修改一行内容</p>
+<pre><code>server 192.168.1.21 iburst
+</code></pre>
+<p>重启服务</p>
+<pre><code>~]# systemctl start chronyd.service``~]# systemctl enable chronyd.service
+</code></pre>
+<p>用命令查看是否修改成功</p>
+<figure data-type="image" tabindex="1"><img src="https://i.328888.xyz/2023/01/04/WWxvN.png" alt="WWxvN.png" loading="lazy"></figure>
+<hr>
+<h2 id="二-将-mencached-最大连接数修改为-2048"><strong>二、将 mencached 最大连接数修改为 2048</strong></h2>
+<p>将MAXCONN=“1024”改为2048</p>
+<pre><code>cd /etc/sysconfig/``vim memcached``PORT=&quot;11211&quot;``USER=&quot;memcached&quot;``MAXCONN=&quot;2048&quot;``CACHESIZE=&quot;64&quot;``OPTIONS=&quot;-l 127.0.0.1,::1,controller&quot;
+</code></pre>
+<p><strong>三、使用 openstack 命令请求一个 token</strong></p>
+<pre><code>[root@controller ~]# openstack token issue
+</code></pre>
+<p><img src="https://i.328888.xyz/2023/01/04/WWeId.png" alt="WWeId.png" loading="lazy"><br>
+如上所示，id即为token值</p>
+<h2 id="四-openstack-命令将镜像上传到-openstack-平台镜像命名为-cirros"><strong>四、openstack 命令将镜像****上传到 openstack 平台镜像命名为 cirros</strong></h2>
+<figure data-type="image" tabindex="2"><img src="https://i.328888.xyz/2023/01/04/WWG2z.png" alt="WWG2z.png" loading="lazy"></figure>
+<p><strong>五、openstack中将控制节点的计算资源也加入集群</strong></p>
+<ul>
+<li><strong>把compute节点的名称和IP都改成controller节点的名称和IP</strong></li>
+</ul>
+<p>cat /etc/iaas-openstack/openrc.sh</p>
+<figure data-type="image" tabindex="3"><img src="https://i.328888.xyz/2023/01/04/WWhPa.png" alt="WWhPa.png" loading="lazy"></figure>
+<ul>
+<li>在Controller节点安装nova-compute服务</li>
+</ul>
+<pre><code>bash /usr/local/bin/iaas-install-nova-compute.sh
+</code></pre>
+<p><strong>安装到最后需要输入Controller节点密码，输入后弹出该表格即是成功！</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://i.328888.xyz/2023/01/04/WWopk.png" alt="WWopk.png" loading="lazy"></figure>
+<ul>
+<li>修改Controller节点的nova配置文件</li>
+</ul>
+<p>因为已经把Controller节点资源加入到云平台，所有创建云主机也可能基于在Controller节点上。为了防止云主机无系统请记得更改nova配置文件</p>
+<pre><code>cat /etc/nova/nova.conf``[libvirt]``virt_type=qemu    ##在[libvirt]下添加此行即可
+</code></pre>
+<p><strong>六、OpenStack运维部</strong></p>
+<p>1、创建云主机外部网络 ext-net，子网为 ext-subnet,云主机浮动 IP 可用网段为 172.18.x.100~172.18.x.200，网关为 172.18.x.1。</p>
+<pre><code>openstack network create --provider-network-type=vlan \``&gt; --provider-physical-network=provider --provider-segment=100 \``&gt; --external --share ext-net
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://i.328888.xyz/2023/01/04/WW94p.png" alt="WW94p.png" loading="lazy"></figure>
+<pre><code>openstack subnet create ext-subnet --network ext-net \``&gt; --gateway 172.18.6.1 --allocation-pool start=172.18.6.100,end=172.18.6.200 \``&gt; --subnet-range 172.18.6.0/16
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://i.328888.xyz/2023/01/04/WWKdv.png" alt="WWKdv.png" loading="lazy"></figure>
+<p>2、创建云主机内部网络 int-net1，子网为 int-subnet1，云主机子网 IP 可用网段为 10.0.0.100~10.0.0.200，网关为 10.0.0.1；创建云主机内部网int-net2，子网为 int-subnet2，云主机子网 IP 可用网段为 10.0.1.100 ~ 10.0.1.200，网关为 10.0.1.1。</p>
+<pre><code>openstack network create int-net1
+</code></pre>
+<pre><code>openstack subnet create int-subnet1 --network int-net1 \``&gt; --allocation-pool start=10.0.0.100,end=10.0.0.200 \``&gt; --geteway 10.0.0.1 --subnet-range 10.0.0.0/8
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://i.328888.xyz/2023/01/04/WWLu3.png" alt="WWLu3.png" loading="lazy"></figure>
+<pre><code>openstack network create int-net2
+</code></pre>
+<pre><code>openstack subnet create int-subnet2 \``&gt; --subnet-range 10.0.0.0/8 \``&gt; --gateway 10.0.0.1 \``&gt; --network int-net2 \``&gt; --allocation-pool start=10.0.0.100,end=10.0.0.200
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://i.328888.xyz/2023/01/04/WWTE5.png" alt="WWTE5.png" loading="lazy"></figure>
+<p>3、添加名为 ext-router 的路由器，添加网关在 ext-net 网络，添加内部端口到 int-net1 网络，完成内部网络 int-net1 和外部网络的连通</p>
+<pre><code>[root@controller ~]# openstack router add subnet ext-router ext-subnet`  `[root@controller ~]# openstack router add subnet ext-router int-subnet1
+</code></pre>
+<p>4、在 keystone 中创建用户 testuser，密码为 password。</p>
+<pre><code>openstack domain list``openstack user create testuser --password password --domain demo
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://i.328888.xyz/2023/01/04/WWYpF.png" alt="WWYpF.png" loading="lazy"></figure>
+<p>5、使用 命令修改 testuser 密码为 000000，并查看 testuser 的详细信息。添加将该用户添加到 admin 项目并赋予普通用户权限，完成后测试登录。</p>
+<pre><code>openstack user set testuser --password 000000``openstack user show testuser``openstack user set testuser --project admin
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://i.328888.xyz/2023/01/04/WkZ4Q.png" alt="WkZ4Q.png" loading="lazy"></figure>
+<pre><code>openstack role add --project admin --user testuser user``openstack user show testuser
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="https://i.328888.xyz/2023/01/04/WkfuP.png" alt="WkfuP.png" loading="lazy"></figure>
+<blockquote>
+<p>最后的 openstack role add --project admin --user testuser user 是测试这条命令是否正确且生效</p>
+</blockquote>
+<p>6、使用命令列出服务目录和端点，查看 glance 服务的端点</p>
+<blockquote>
+<p>https://www.talkwithtrend.com/Question/432247</p>
+</blockquote>
+<pre><code>openstack catalog list
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgU1p45K0NT0r8Dm8oqeMl67QibeLcia06TmoaQ1LtO5Vtl5aVMg8tGH9BQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack catalog show glance
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgU8zRycyAtKs9da1P64ibhS4O4qenNU78MsXqNnycfZDnGVonvzLmAptA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>7、使用 glance 相关命令，上传镜像，源使用 CentO S_6.5_x86_64_XD.qcow2，名字为 testone，然后使用 openstack 命令修改这个镜像名改为 examimage，然后给这个镜像打一个标签，标签名字为 lastone 改完后使用 openstack 命令查看镜像列表.</p>
+<pre><code>openstack image create testone --container-format bare \``&gt; --disk-format qcow2 --file /root/CentO S_6.5_x86_64_XD.qcow2 \``&gt; --public``openstack image set testone --name examimage
+</code></pre>
+<figure data-type="image" tabindex="14"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUUaW84wgmGOW7u6YO5DqNmcyMibcOm2rFr5RFoPKXviawmthvADViaLnAg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack image set examimage --tag lastone``openstack image list``openstack image show examimage
+</code></pre>
+<figure data-type="image" tabindex="15"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUtKYBecfp4nSgyf8vxWzchu31lKhmibHcFG8URrdHynyzibtBAZ8ciaCgg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>8、进入到glance 后端存储目录中，使用 qemu 命令查看任意的一个镜像信息</p>
+<blockquote>
+<p>glance后端存储目录为 /var/lib/glance/images/</p>
+</blockquote>
+<pre><code>cd /var/lib/glance/images/``qemu-img info &lt;镜像文件名&gt;
+</code></pre>
+<figure data-type="image" tabindex="16"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUaKBGP5iaLdLFbP2RpzTeFDGg3Ve25rP3vHyQuv0d9o389COmFqxibmlQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>9、使用 du 命令查看 nova 主配置文件大小</p>
+<pre><code>cd /etc/nova/``du -h nova.conf
+</code></pre>
+<figure data-type="image" tabindex="17"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUlLjUFDDjyTDsKfqxu2vy65HWTRx5KJD2RsFYfKQDkKm3iapflaiczr6Q/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>10、创建一个卷类型，然后创建一块带这个卷类型标识的云硬盘，查询其详细信息。</p>
+<blockquote>
+<p>openstack命令创建卷相关<br>
+https://cloud.tencent.com/developer/article/1644193</p>
+</blockquote>
+<pre><code>openstack volume type create testvolume``openstack volume type list
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUYWo72xfNAzlNo0LKRqZKNfRzviabHt0Y3ia7JadALxQban58d66K8pgA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack volume create --type testvolume --size 1 testone
+</code></pre>
+<figure data-type="image" tabindex="19"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUfI0PUVrQ5gc0q7vgjYGEXsVa5DZpNAoOoyF8EbKhvnvSyFWayeBOFA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack volume list``openstack volume show testone
+</code></pre>
+<figure data-type="image" tabindex="20"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUkCrXY4XYmPicZibMajsibWOGrlZD4PUuPCIAHX2uGwTdwy5EU98FV3nFw/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>11、将该云硬盘挂载到虚拟机中，将该云硬盘格式化为 xfs。创建一个文件文件名为工位号内容为工位号，然后将该云硬盘卸载，使用 openstack 命令将该云硬盘修改为只读状态，再次挂载后查看是否存在原始文件，然后再次向该云硬盘中创建一个文件，文件名为工位号_02。</p>
+<ul>
+<li>创建云主机</li>
+</ul>
+<pre><code>openstack server create --image examimage --flavor small \``&gt; --nic net-id=&lt;内网网络id&gt; &lt;云主机名称&gt;
+</code></pre>
+<figure data-type="image" tabindex="21"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUhbcvRRtwXh0nLyspSdbZDxiabSHuUSUB7G0orIewYwAnnMLsA5CclLA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack network list``openstack subnet list``openstack server list``openstack server show &lt;云主机名称&gt;
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUvy290ySiaPJ6zjS2AT2VLLsBibkXUDYlBozYjR23odMIp2zWwcLyse9A/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<ul>
+<li>挂载磁盘到云主机</li>
+</ul>
+<blockquote>
+<p>[root@controller ~]# openstack server add volume cirrors testone</p>
+</blockquote>
+<p>进云主机内查看（vdc）</p>
+<pre><code>lsblk` `mkfs.xfs /dev/vdc
+</code></pre>
+<figure data-type="image" tabindex="23"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUxtXyNCRgaNjwQYz4U7fzFQlgD4lQ1aia2veKBl0hZuICd7TRlQWIb0A/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>mkdir vdc``mount /dev/vdc /opt/vdc/
+</code></pre>
+<figure data-type="image" tabindex="24"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUTuNbMy3IdhfN1nNODAluhn2ZrctQ9dS7x94wdMyGicSsHnUBCE0SpkQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>cd /opt/vdc/<br>
+vim 6</p>
+<p>6</p>
+<p>x保存</p>
+</blockquote>
+<ul>
+<li>从云主机上卸载云硬盘</li>
+</ul>
+<blockquote>
+<p>[root@controller ~]# openstack server remove volume centos_7.5 testone</p>
+</blockquote>
+<ul>
+<li>将云硬盘设置为只读</li>
+</ul>
+<blockquote>
+<p>[root@controller ~]# openstack volume set --read-only testone</p>
+</blockquote>
+<ul>
+<li>再次挂载云硬盘</li>
+</ul>
+<blockquote>
+<p>[root@controller ~]# openstack server add volume centos_7.5 testone</p>
+</blockquote>
+<figure data-type="image" tabindex="25"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUY2w6kqHrRttoXTrpt0MWt1mOVrygtcwPABbiciaDbicaQuosO7XHhwIiaw/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>12、使用命令创建一个 5GB 的云硬盘，名称为 disk-2，将云硬盘挂载到云虚拟机内，然后格式化为 ext4，挂载到虚拟机的 /mnt/ 目录下，使用 df -h 将命令和返回信息提交到答题框</p>
+<pre><code>openstack volume create --size 5 disk-2``openstack server add volume create centos_7.5 disk-2
+</code></pre>
+<figure data-type="image" tabindex="26"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUYyChI86YU6Ka4RgN7knCvdNDYnoIM0RN6ffNZXcgicCromrjiaMLGxoQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>mkfs.ext4 /dev/vd` `mount /dev/vde /mnt/``df -hT
+</code></pre>
+<figure data-type="image" tabindex="27"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUGnpSsGncSL72jWdpUEic2crpIZP8cvJyD1iaJ8MCLj5t7ACJQBicelNlA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>13、将该云硬盘使用命令卸载，使用命令将该云硬盘扩容到10GB使用命令将云硬盘挂载到云主机上，将命令及返回信息提交到答题框。</p>
+<ul>
+<li>进入云主机使用命令扩容文件系统，扩容后再次挂载到 /mnt/</li>
+</ul>
+<pre><code>[root@controller ~]# openstack server remove volume centos_7.5 disk-2` `[root@controller ~]# openstack volume set disk-2 --size 10``[root@controller ~]# openstack server add volume centos_7.5 disk-2
+</code></pre>
+<ul>
+<li>卸载之前的vde ，重新格式化vdf，然后挂载</li>
+</ul>
+<figure data-type="image" tabindex="28"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUWXHcOB0DZeSl8oibiceETKQGsK2VY60t29zQKiad1w6UXaTVALSmZCDDg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>14、使用 swift 相关命令，创建一个容器，然后往这个容器中上传一个文件（文件可以自行创建），上传完毕后，使用命令查看容器</p>
+<blockquote>
+<p>swift相关命令</p>
+<p>https://www.likecs.com/show-204426264.html?sc=1000</p>
+</blockquote>
+<pre><code>swift post c1``openstack container list
+</code></pre>
+<figure data-type="image" tabindex="29"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUhF7N9EiaKvES1An1YcsM20Q3V32xY3RT6qhwTPWOia9FwJsrmTLaTx2g/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack object list c1``swift upload c1 /etc/hosts``openstack object list c1
+</code></pre>
+<figure data-type="image" tabindex="30"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUrWALvdZGgfYgFDm4F7NOZN6n1ntexw2HCx7jln3crFtGIA1JUhcj4A/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>15、使用命令创建名称为 group_web 的安全组该安全组的描述为工位号，为该安全组添加一条规则允许任意 ip 地址访问 web 流量，完成后查看该安全组的详细信息</p>
+<pre><code>openstack security group create group_web --description 6
+</code></pre>
+<figure data-type="image" tabindex="31"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUFjPiaUJTJl2dRIpaZQ037tichiaNTbiajXiccjTLibcOhoYL2bVN8opGq4qg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack security group rule create group_web --protocol tcp --egress
+</code></pre>
+<figure data-type="image" tabindex="32"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUb5W7VicszPakjrYQBibccYYWp9goOv20B3ar0aDy5J8H26316f31M5rQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>openstack security group show group_web
+</code></pre>
+<figure data-type="image" tabindex="33"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUgicH9xBz0Kic2Yg9WZolJvQkI3eJgRsiaicMA9MYYxMBGX2gqECwYraAvQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>16、使用命令将int-net1网络设置为共享，然后查看int-net1网络的详细信息</p>
+<pre><code>openstack subnet set int-net1 --shared` `openstack subnet show int-net1
+</code></pre>
+<figure data-type="image" tabindex="34"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUYIoVkm5icvvicp7Niaj7pgKxjjc1FcPSicrwyK9KJZNTvOfC7rnKSvvYtA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>17、使用dashboard界面使用centos7.5镜像创建一台云主机，云主机命名为test-01，使用命令查看浮动 IP 地址池，使用命令创建一个浮动 IP，然后将浮动IP 绑定到云主机上</p>
+<pre><code>openstack floating ip create ext-net
+</code></pre>
+<figure data-type="image" tabindex="35"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUIVvbqEwnUuk90ibS7Hk1QcRHszy7Igxnl5GlFRU5ucXtoFY86rqHDng/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>[root@controller ~]# openstack server add floating ip centos_7.5 192.168.1.105
+</code></pre>
+<p>18、使用 opentack 命令利用 centos7.5 镜像创建一台云主机，连接 int-net1 网络，云主机名称为 test-02。创建成功后使用命令查看云主机详细信息，确定该云主机是处于计算节点还是控制节点。如果云主机处于控制节点上请将其冷迁移到计算节点，如果如果云主机处于计算节点上请将其冷迁移到控制节点。</p>
+<blockquote>
+<p>openstack云主机冷/热迁移相关</p>
+<p>https://blog.csdn.net/tony_vip/article/details/123733056</p>
+</blockquote>
+<pre><code>#创建云主机；连接网络；查看详细信息；步骤同上。
+</code></pre>
+<figure data-type="image" tabindex="36"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUcyYhsB3WUX8yx29r95M7TmkphkkwZy46TcqGYejWCdKPcnnxsqibicwQ/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="37"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUEwxXoiamJgWrfib75FFZh5URk13lqWuXgMic74daUDy1hnwuuoIX72BQA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<h2 id="冷迁移步骤"><strong>冷迁移步骤</strong></h2>
+<p>1.关闭虚拟机</p>
+<p>2.找到虚拟机位于 /var/lib/nova/instances 下文件</p>
+<p>3.将虚拟机的文件全部 copy 到目标主机的相同位置下</p>
+<p>4.修改用户组</p>
+<p>5.更新数据库中 host,node 字段为目标主机的名字</p>
+<p>6.重启目标主机的 nova-compute服务</p>
+<p><strong>操作记录</strong></p>
+<p>1、显示运行的虚机</p>
+<blockquote>
+<p>openstack server list</p>
+</blockquote>
+<figure data-type="image" tabindex="38"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUneQZ9YP4Opfxzfwib4EHCqThjibDriazoTsTMHXazsVhYgWfrv791BfTg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>2、关闭虚机，并切换到 /var/lib/nova/instances /目录下</p>
+<blockquote>
+<p>[root@controller ~]# openstack server stop centos_7.5</p>
+</blockquote>
+<p>前面图中可以看出虚机在compute节点</p>
+<pre><code>[root@compute ~]# cd /var/lib/nova/instances/``[root@compute instances]# ls``38342c2e-b392-44c1-93a6-83fc11d5113c  _base  compute_nodes  locks
+</code></pre>
+<p>3.将文件copy到目标主机的对应位置下，并修改其权限</p>
+<pre><code>[root@compute instances]# scp -r /var/lib/nova/instances/* controller:/var/lib/nova/instances/ 
+</code></pre>
+<figure data-type="image" tabindex="39"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUREthiarboKQpF5mOEqqaenqtpjNRRshuTvPAGqfWd07ibYho2kLGagyg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<pre><code>[root@controller instances]# chown -R nova:nova 38342c2e-b392-44c1-93a6-83fc11d5113c/ _base/ compute_nodes locks/
+</code></pre>
+<figure data-type="image" tabindex="40"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUoRjM6E1e46ebO5ypux4c60ePTl32ibXZ4WZ8XP2Uiaq6ThouJB4O0lsA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>4、修改数据库中的字段</p>
+<pre><code>mysql -uroot -p000000``MariaDB [(none)]&gt; use nova;``MariaDB [nova]&gt; update instances set host='controller', node='controller' where uuid='38342c2e-b392-44c1-93a6-83fc11d5113c';
+</code></pre>
+<figure data-type="image" tabindex="41"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUGD027Mem07hnVTLlcHVcXkiaESiasgiaIvsABOcJO3Ge8AeICvtHOIdeg/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<p>5、查询虚机所在的主机</p>
+<pre><code>openstack server list``openstack server show centos_7.5
+</code></pre>
+<figure data-type="image" tabindex="42"><img src="https://mmbiz.qpic.cn/mmbiz_png/ibBGsHY4gGl9qs0T7Abm5quSHGSTK2NgUTmNCVaFSVHicP4TiaLHksaNQssUZ4bEVdXfkUvKicH00eiaxcxuFiawuyCA/640?wx_fmt=png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="43"><img src="https://mmbiz.qpic.cn/mmbiz_gif/ibBGsHY4gGl8tK5IaPPMxI5HyysywKjHgI3eTRlpeQibXFaCWrRtFcqxRLJO7KZibU20Ufpg08c6ZBm7ayWUoaLUA/640?wx_fmt=gif" alt="" loading="lazy"></figure>
+<p>到这里就结束了，如果有帮助的话可以支持一下博主，下面按钮投喂博主。</p>
+<p>本文转自 <a href="https://mp.weixin.qq.com/s/5vy8sOsPCDLlpCGB1MNlbw">https://mp.weixin.qq.com/s/5vy8sOsPCDLlpCGB1MNlbw</a>，如有侵权，请联系删除。</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://zhiyong89.github.io/post/openstack_Om/" class="post-title gt-a-link">
+                    openstack运维题
+                </a>
+            </div>
+        
+
+        
+            <span id="/post/BRICS/" class="leancloud_visitors" data-flag-title="BRICS-FS-11云计算赛项样题难点解析（私有云部分）">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: '',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">记录学习生活</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/zhiyong0389/" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+                <a href="https://weibo.com/u/6504092389" target="_blank">
+                    <i class="fab fa-weibo gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+                <a href="https://www.zhihu.com/people/ni-ai-7-62-7" target="_blank">
+                    <i class="fab fa-zhihu gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme <a href="https://github.com/imhanjie/gridea-theme-pure" target="_blank">Pure</a>, Powered by <a
+                href="https://gridea.dev" target="_blank">Gridea</a> | <a href="https://zhiyong89.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+</div>
+
+<script>
+  hljs.highlightAll()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
